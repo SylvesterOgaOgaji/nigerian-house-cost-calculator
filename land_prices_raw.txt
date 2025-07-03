@@ -1,0 +1,5 @@
+lagos_ikeja:50000
+abuja_central:45000
+kano_central:40000
+rivers_port_harcourt:42000
+default:35000

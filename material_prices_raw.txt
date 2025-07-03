@@ -1,0 +1,3 @@
+low_quality:500
+medium_quality:1000
+high_quality:1500

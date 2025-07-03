@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nigerian House Cost Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <i class="fas fa-home header-icon"></i>
+                <h1 class="header-title">Nigerian House Cost Calculator</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search..." class="search-input">
+                </div>
+                <div class="header-actions">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">1</span>
+                    </button>
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="land-cost">
+                <i class="fas fa-map-marker-alt"></i>
+                Land Cost
+            </button>
+            <button class="tab-btn" data-tab="house-cost">
+                <i class="fas fa-home"></i>
+                House Cost
+            </button>
+            <button class="tab-btn" data-tab="budget-planning">
+                <i class="fas fa-calculator"></i>
+                Budget Planning
+            </button>
+            <button class="tab-btn" data-tab="chat-assistant">
+                <i class="fas fa-comments"></i>
+                Chat Assistant
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Land Cost Tab -->
+            <div id="land-cost" class="tab-content active">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fas fa-map-marker-alt card-icon"></i>
+                        <h2>Land Cost Estimation</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="land-state">State</label>
+                        <select id="land-state" class="form-select">
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="land-lga">Local Government Area (LGA)</label>
+                        <select id="land-lga" class="form-select" disabled>
+                            <option value="">Select LGA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="land-size">Land Size (Square Meters)</label>
+                        <input type="number" id="land-size" class="form-input" placeholder="e.g., 600" min="1">
+                    </div>
+                    <button id="calculate-land-cost" class="btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        Calculate Land Cost
+                    </button>
+                    <div id="land-results" class="results-container" style="display: none;">
+                        <div class="results-header">
+                            <h3>Land Cost Results</h3>
+                            <span class="results-date"></span>
+                        </div>
+                        <div class="results-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- House Cost Tab -->
+            <div id="house-cost" class="tab-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fas fa-home card-icon"></i>
+                        <h2>House Cost Estimation</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="house-type">House Type</label>
+                        <select id="house-type" class="form-select">
+                            <option value="">Select House Type</option>
+                            <option value="1_bedroom_bungalow">1-Bedroom Bungalow</option>
+                            <option value="2_bedroom_bungalow">2-Bedroom Bungalow</option>
+                            <option value="3_bedroom_bungalow">3-Bedroom Bungalow</option>
+                            <option value="4_bedroom_bungalow">4-Bedroom Bungalow</option>
+                            <option value="2_bedroom_duplex">2-Bedroom Duplex</option>
+                            <option value="3_bedroom_duplex">3-Bedroom Duplex</option>
+                            <option value="4_bedroom_duplex">4-Bedroom Duplex</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="house-state">State</label>
+                        <select id="house-state" class="form-select">
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="house-lga">Local Government Area (LGA)</label>
+                        <select id="house-lga" class="form-select" disabled>
+                            <option value="">Select LGA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="construction-type">Construction Type</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="construction-type" value="polystyrene" checked>
+                                <span class="radio-custom"></span>
+                                Polystyrene Construction (25% cheaper, energy efficient)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="construction-type" value="traditional">
+                                <span class="radio-custom"></span>
+                                Traditional Block Construction
+                            </label>
+                        </div>
+                    </div>
+                    <button id="calculate-house-cost" class="btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        Calculate House Cost
+                    </button>
+                    <div id="house-results" class="results-container" style="display: none;">
+                        <div class="results-header">
+                            <h3>House Cost Results</h3>
+                            <span class="results-date"></span>
+                        </div>
+                        <div class="results-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Planning Tab -->
+            <div id="budget-planning" class="tab-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fas fa-calculator card-icon"></i>
+                        <h2>Budget Planning</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="available-budget">Available Budget (₦)</label>
+                        <input type="number" id="available-budget" class="form-input" placeholder="e.g., 5000000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthly-savings">Monthly Savings (₦)</label>
+                        <input type="number" id="monthly-savings" class="form-input" placeholder="e.g., 200000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="budget-state">State</label>
+                        <select id="budget-state" class="form-select">
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget-lga">Local Government Area (LGA)</label>
+                        <select id="budget-lga" class="form-select" disabled>
+                            <option value="">Select LGA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="house-plan-upload">Upload House Plan (Optional)</label>
+                        <div class="file-upload-container">
+                            <input type="file" id="house-plan-upload" class="file-input" accept=".pdf,.jpg,.jpeg,.png">
+                            <label for="house-plan-upload" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload house plan or drag and drop</span>
+                                <small>PDF, JPG, PNG files up to 10MB</small>
+                            </label>
+                        </div>
+                        <div id="uploaded-file-info" class="uploaded-file-info" style="display: none;">
+                            <i class="fas fa-file"></i>
+                            <span class="file-name"></span>
+                            <button class="remove-file-btn" type="button">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="calculate-budget-plan" class="btn-primary">
+                        <i class="fas fa-chart-line"></i>
+                        Create Budget Plan
+                    </button>
+                    <div id="budget-results" class="results-container" style="display: none;">
+                        <div class="results-header">
+                            <h3>Budget Planning Results</h3>
+                            <span class="results-date"></span>
+                        </div>
+                        <div class="results-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Assistant Tab -->
+            <div id="chat-assistant" class="tab-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <i class="fas fa-comments card-icon"></i>
+                        <h2>AI Construction Assistant</h2>
+                    </div>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message bot-message">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    <p>Hello! I'm your Nigerian house building assistant. I can help you with:</p>
+                                    <ul>
+                                        <li>Land and house cost calculations</li>
+                                        <li>Polystyrene construction guidance</li>
+                                        <li>Building materials and labor costs</li>
+                                        <li>Construction steps and planning</li>
+                                    </ul>
+                                    <p>Ask me anything in English or Pidgin!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-input" class="chat-input" placeholder="Ask about construction costs, materials, or building process...">
+                            <button id="send-chat" class="chat-send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Fetching real-time prices...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
