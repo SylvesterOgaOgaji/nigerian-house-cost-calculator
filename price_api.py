@@ -103,5 +103,17 @@ def get_states_lgas():
             'error': str(e)
         }), 500
 
+
+# Serve frontend (index.html and static files)
+from flask import send_from_directory
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('static', 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('static', path)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
