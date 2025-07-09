@@ -17,14 +17,7 @@ class NigerianHouseCalculator {
         // Load states and LGAs
         const statesLgasResponse = await fetch('nigerian_states_lgas.json');
         this.statesLgas = await statesLgasResponse.json();
-
-        // Load material prices
-        const materialPricesResponse = await fetch('material_prices.json');
-        this.materialPrices = await materialPricesResponse.json();
-
-        // Load land prices
-        const landPricesResponse = await fetch('land_prices.json');
-        this.landPrices = await landPricesResponse.json();
+        // Material and land prices will be fetched in real-time from API, not loaded here
     }
 
     setupEventListeners() {
@@ -91,7 +84,7 @@ class NigerianHouseCalculator {
         }
     }
 
-    calculateLandCost() {
+    async calculateLandCost() {
         const state = document.getElementById('land-state').value;
         const lga = document.getElementById('land-lga').value;
         const size = parseInt(document.getElementById('land-size').value);
@@ -101,20 +94,33 @@ class NigerianHouseCalculator {
             return;
         }
 
-        const landKey = `${state.toLowerCase()}_${lga.toLowerCase()}`;
-        const landPrice = this.landPrices[landKey] || this.landPrices['default'];
-        const totalCost = landPrice * size;
-
-        this.displayLandResults({
-            state,
-            lga,
-            size,
-            landPrice,
-            totalCost
-        });
+        // Fetch real-time land price from API
+        try {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            const response = await fetch('/api/land-price', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ state, lga })
+            });
+            const data = await response.json();
+            document.getElementById('loading-overlay').style.display = 'none';
+            if (!data.success) throw new Error(data.error || 'Failed to fetch land price');
+            const landPrice = data.landPrice;
+            const totalCost = landPrice * size;
+            this.displayLandResults({
+                state,
+                lga,
+                size,
+                landPrice,
+                totalCost
+            });
+        } catch (err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            alert('Error fetching real-time land price: ' + err.message);
+        }
     }
 
-    calculateHouseCost() {
+    async calculateHouseCost() {
         const houseType = document.getElementById('house-type').value;
         const state = document.getElementById('house-state').value;
         const lga = document.getElementById('house-lga').value;
@@ -125,23 +131,44 @@ class NigerianHouseCalculator {
             return;
         }
 
-        const materialQuality = constructionType === 'polystyrene' ? 'medium_quality' : 'high_quality';
-        const materialCost = this.materialPrices[materialQuality];
-        const area = 100; // Example area in sqm
-        const totalCost = materialCost * area;
-
-        this.displayHouseResults({
-            houseType,
-            state,
-            lga,
-            constructionType,
-            materialCost,
-            area,
-            totalCost
-        });
+        // Fetch real-time material price from API (simulate for now)
+        try {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            // Simulate API for material price (replace with real endpoint if available)
+            let materialQuality = constructionType === 'polystyrene' ? 'medium_quality' : 'high_quality';
+            // For demo, use static endpoint or fallback
+            let materialPrice = 0;
+            const resp = await fetch('/api/material-price', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quality: materialQuality, state, lga })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                materialPrice = data.materialPrice;
+            } else {
+                // fallback to static
+                materialPrice = materialQuality === 'medium_quality' ? 1000 : 1500;
+            }
+            document.getElementById('loading-overlay').style.display = 'none';
+            const area = 100; // Example area in sqm
+            const totalCost = materialPrice * area;
+            this.displayHouseResults({
+                houseType,
+                state,
+                lga,
+                constructionType,
+                materialCost: materialPrice,
+                area,
+                totalCost
+            });
+        } catch (err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            alert('Error fetching real-time material price: ' + err.message);
+        }
     }
 
-    calculateBudgetPlan() {
+    async calculateBudgetPlan() {
         const availableBudget = parseInt(document.getElementById('available-budget').value);
         const monthlySavings = parseInt(document.getElementById('monthly-savings').value);
         const state = document.getElementById('budget-state').value;
@@ -152,23 +179,50 @@ class NigerianHouseCalculator {
             return;
         }
 
-        const landKey = `${state.toLowerCase()}_${lga.toLowerCase()}`;
-        const landPrice = this.landPrices[landKey] || this.landPrices['default'];
-        const landCost = landPrice * 500; // Example land size
-        const houseCost = this.materialPrices['medium_quality'] * 100; // Example house size
-        const totalCost = landCost + houseCost;
-        const monthsToSave = Math.ceil((totalCost - availableBudget) / monthlySavings);
+        try {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            // Fetch land price
+            const landResp = await fetch('/api/land-price', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ state, lga })
+            });
+            const landData = await landResp.json();
+            if (!landData.success) throw new Error(landData.error || 'Failed to fetch land price');
+            const landPrice = landData.landPrice;
+            const landCost = landPrice * 500; // Example land size
 
-        this.displayBudgetResults({
-            availableBudget,
-            monthlySavings,
-            state,
-            lga,
-            landCost,
-            houseCost,
-            totalCost,
-            monthsToSave
-        });
+            // Fetch material price (simulate API)
+            let materialPrice = 0;
+            const matResp = await fetch('/api/material-price', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quality: 'medium_quality', state, lga })
+            });
+            const matData = await matResp.json();
+            if (matData.success) {
+                materialPrice = matData.materialPrice;
+            } else {
+                materialPrice = 1000;
+            }
+            const houseCost = materialPrice * 100; // Example house size
+            const totalCost = landCost + houseCost;
+            const monthsToSave = Math.ceil((totalCost - availableBudget) / monthlySavings);
+            document.getElementById('loading-overlay').style.display = 'none';
+            this.displayBudgetResults({
+                availableBudget,
+                monthlySavings,
+                state,
+                lga,
+                landCost,
+                houseCost,
+                totalCost,
+                monthsToSave
+            });
+        } catch (err) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            alert('Error fetching real-time prices: ' + err.message);
+        }
     }
 
     displayLandResults(data) {
